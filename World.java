@@ -41,7 +41,6 @@ public class World {
         this.text.setFill(Color.WHITE);
     }
 
-//  /Users/mateuszmeller/Desktop/programowanie/src/sample/Controller.java
 
     public void drawWorld(GraphicsContext gc) {
         gc.setFill(Color.DARKBLUE);
