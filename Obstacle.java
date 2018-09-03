@@ -1,21 +1,28 @@
 package sample;
 
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
 import java.util.Random;
 
-public class Obstacle extends Sprite {
+public class Obstacle extends Sprite implements Commons {
 
-    private int canvasWidth;
+    private final static int MINIMAL_HEIGHT = 100;
+    private static final int AUTO_HEIGHT = 180;
 
     public Obstacle(int canvWidth, int canvHeight) {
-        this.canvasWidth = canvWidth;
         this.x = canvWidth;
-        this.width = 40;
+        this.width = OBSTACLE_WIDTH;
         Random rnd = new Random();
-        this.height = (int) (rnd.nextDouble() * canvHeight / 2) - 30;
-        if (this.height < 100) {
-            this.height = 180;
+
+        /* Assigns random height of the obstacle. If it happens to be smaller
+        * than certain threshold - assign fixed value. */
+        this.height = (int) (rnd.nextDouble() * canvHeight / 2) + 50;
+        if (this.height < MINIMAL_HEIGHT) {
+            this.height = AUTO_HEIGHT;
         }
 
+        /* Randomly picks what directon obstacle will face.
+        * If 1 then the obstacle points upwards, downwards otherwise. */
         int dir = rnd.nextInt(2);
 
         if (dir == 1) {
@@ -23,46 +30,27 @@ public class Obstacle extends Sprite {
         } else {
             this.y = 0;
         }
+
+        /* Set proportional to true, so it "destroys" the texture
+        * as a result all obstacles are in different 'smooth' color, based on
+        * it's height. */
+        Image texture = new Image("file:/Users/mateuszmeller/Desktop/programowanie/src/sample/spaceship 2/brick.png");
+        this.image = new ImagePattern(texture, this.x, this.y, this.width, this.height, true);
     }
 
+    /**
+     * Checks if obstacle is on the screen.
+     *
+     * @return true if the obstacle is on the screen, false otherwise.
+     */
     public boolean inBounds() {
         return this.x + this.width >= 0;
     }
 
-
+    /**
+     * Moves the obstacle in left direction.
+     */
     public void move() {
-        this.x -= 2;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+        this.x -= WORLD_SPEED;
     }
 }
