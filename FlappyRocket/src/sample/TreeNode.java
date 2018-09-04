@@ -4,13 +4,16 @@ import java.util.ArrayList;
 
 public class TreeNode {
     private static final int MAX_NUMBER_OF_NODES = 4;
-    ArrayList<TreeNode> children;
-    //TreeNode children[] = new TreeNode[MAX_NUMBER_OF_NODES];
+    private ArrayList<TreeNode> children;
     private int decision;
 
     public TreeNode(int decision) {
         this.decision = decision;
-        this.children = new ArrayList<>();
+        if (decision > 2) {
+            this.children = new ArrayList<>();
+        } else {
+            this.children = null;
+        }
     }
 
     public void addChild(TreeNode child) {
@@ -34,14 +37,14 @@ public class TreeNode {
     public ArrayList<Integer> inOrderTraversal(TreeNode root) {
 
         ArrayList<Integer> decisionSet = new ArrayList<>();
-        if (!root.children.isEmpty()) {
-            for (int i = 0; i < root.children.size() / 2; i++) {
-                decisionSet.addAll(inOrderTraversal(root.children.get(i)));
-            }
+        if (root.children != null && !root.children.isEmpty()) {
             decisionSet.add(root.decision);
-            for (int i = root.children.size() / 2; i < root.children.size(); i++) {
+            for (int i = 0; i < root.children.size(); i++) {
                 decisionSet.addAll(inOrderTraversal(root.children.get(i)));
             }
+            /*for (int i = root.children.size() / 2; i < root.children.size(); i++) {
+                decisionSet.addAll(inOrderTraversal(root.children.get(i)));
+            }*/
         } else {
             decisionSet.add(root.decision);
         }
@@ -49,4 +52,15 @@ public class TreeNode {
         return decisionSet;
     }
 
+    public boolean hasChildren() {
+        return this.children != null;
+    }
+
+    public ArrayList<TreeNode> getChildren() {
+        return children;
+    }
+
+    public static int getMaxNumberOfNodes() {
+        return MAX_NUMBER_OF_NODES;
+    }
 }

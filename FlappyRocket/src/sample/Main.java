@@ -28,7 +28,7 @@ public class Main extends Application implements Commons {
         Canvas canvas = new Canvas(GAME_WIDTH, GAME_HEIGHT);
         root.getChildren().addAll(canvas, world[0].getText());
 
-        TreeNode rootN = new TreeNode(2);
+        /*TreeNode rootN = new TreeNode(2);
         rootN.addChild(new TreeNode(3));
         rootN.addChild(new TreeNode(5));
         rootN.addChild(new TreeNode(7));
@@ -37,7 +37,7 @@ public class Main extends Application implements Commons {
         rootN.getChild(3).addChild(new TreeNode(15));
 
         System.out.println(rootN.inOrderTraversal(rootN));
-
+*/
 
 
         /* Handling user input */
