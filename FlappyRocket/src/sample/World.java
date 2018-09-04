@@ -159,6 +159,7 @@ public class World implements Commons {
         }
         moveStars();
         this.player.move();
+        this.player.act(this.player.detectObstacles(obstacles));
     }
 
 
