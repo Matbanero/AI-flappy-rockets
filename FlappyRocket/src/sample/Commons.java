@@ -16,4 +16,7 @@ public interface Commons {
     double ACC = 0.1;
     double DRAG = -2.5;
     int MAXSPEED = 15;
+    int POPULATION_SIZE = 4;
+    int MAX_GENERATION = 200;
+
 }

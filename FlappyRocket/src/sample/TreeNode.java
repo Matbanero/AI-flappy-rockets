@@ -15,7 +15,6 @@ public class TreeNode {
 
     public void addChild() {
 
-        Random rnd = new Random();
         switch (this.decision) {
             case 0:
                 break;
@@ -23,27 +22,27 @@ public class TreeNode {
                 break;
             case 2:
                 for (int i = 0; i < 3; i++) {
-                    this.children.add(new TreeNode(rnd.nextInt(7)));
+                    this.children.add(createNode());
                 }
                 break;
             case 3:
                 for (int i = 0; i < 2; i++) {
-                    this.children.add(new TreeNode(rnd.nextInt(7)));
+                    this.children.add(createNode());
                 }
                 break;
             case 4:
                 for (int i = 0; i < 2; i++) {
-                    this.children.add(new TreeNode(rnd.nextInt(7)));
+                    this.children.add(createNode());
                 }
                 break;
             case 5:
                 for (int i = 0; i < 2; i++) {
-                    this.children.add(new TreeNode(rnd.nextInt(7)));
+                    this.children.add(createNode());
                 }
                 break;
             case 6:
                 for (int i = 0; i < 3; i++) {
-                    this.children.add(new TreeNode(rnd.nextInt(7)));
+                    this.children.add(createNode());
                 }
                 break;
             default:
@@ -88,6 +87,33 @@ public class TreeNode {
 
     public ArrayList<TreeNode> getChildren() {
         return children;
+    }
+
+    private TreeNode createNode() {
+        TreeNode node;
+        Random rnd = new Random();
+        double decisionPicker = rnd.nextDouble();
+
+        /* Creating decision picker to assign higher decision probability for terminal functions
+        * (jump and waitForNext eg. 0 and 1). Using this hack because trees can grow large and
+        * cause stackOverflowExceptions. */
+
+        if (decisionPicker < 0.3) {
+            node = new TreeNode(0);
+        } else if (decisionPicker >= 0.3 && decisionPicker < 0.6) {
+            node = new TreeNode(1);
+        } else if (decisionPicker >= 0.84 && decisionPicker < 0.92) {
+            node = new TreeNode(2);
+        } else if (decisionPicker >= 0.6 && decisionPicker < 0.72) {
+            node = new TreeNode(3);
+        } else if (decisionPicker >= 0.72 && decisionPicker < 0.84) {
+            node = new TreeNode(4);
+        } else if (decisionPicker >= 0.92 && decisionPicker < 0.96) {
+            node = new TreeNode(5);
+        } else {
+            node = new TreeNode(6);
+        }
+        return node;
     }
 
 }

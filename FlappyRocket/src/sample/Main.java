@@ -28,17 +28,6 @@ public class Main extends Application implements Commons {
         Canvas canvas = new Canvas(GAME_WIDTH, GAME_HEIGHT);
         root.getChildren().addAll(canvas, world[0].getText());
 
-        /*TreeNode rootN = new TreeNode(2);
-        rootN.addChild(new TreeNode(3));
-        rootN.addChild(new TreeNode(5));
-        rootN.addChild(new TreeNode(7));
-        rootN.addChild(new TreeNode(9));
-        rootN.getChild(3).addChild(new TreeNode(12));
-        rootN.getChild(3).addChild(new TreeNode(15));
-
-        System.out.println(rootN.inOrderTraversal(rootN));
-*/
-
 
         /* Handling user input */
         scene.setOnKeyPressed(
@@ -47,12 +36,12 @@ public class Main extends Application implements Commons {
                     public void handle(KeyEvent event) {
 
                         /* If player presses space - player jumps. */
-                        if (event.getCode() == KeyCode.SPACE) {
+                       /* if (event.getCode() == KeyCode.SPACE) {
                             world[0].getPlayer().jump();
-                        }
+                        }*/
 
                         /* If player is dead and presses R - restart game. */
-                        if (!world[0].getPlayer().isAlive() && event.getCode() == KeyCode.R) {
+                        if (world[0].allDead() && event.getCode() == KeyCode.R) {
                             root.getChildren().remove(world[0].getText());
                             world[0] = new World(Commons.GAME_WIDTH, Commons.GAME_HEIGHT);
                             root.getChildren().add(world[0].getText());
@@ -71,7 +60,7 @@ public class Main extends Application implements Commons {
                 double t = currentTimer - startTimer / 1000000000.0;
 
                 /* As long player is alive, update and draw the world. */
-                if (world[0].getPlayer().isAlive()) {
+                if (!world[0].allDead()) {
                     world[0].update();
                     world[0].drawWorld(gc);
                 }

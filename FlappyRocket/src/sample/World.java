@@ -4,30 +4,44 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
 
 public class World implements Commons {
+    private static int generation = 0;
     private int width;
     private int height;
     private int score;
     private ArrayList<Obstacle> obstacles;
     private ArrayList<Circle> stars;
-    private Player player;
+    //private Player player;
     private Text text;
     private static final int STAR_RAD = 3;
+    private ArrayList<Player> population;
 
 
     public World(int x, int y) {
         this.width = x;
         this.height = y;
         this.score = 0;
-        player = new Player(y);
+        this.generation++;
+        //player = new Player(y);
         stars = new ArrayList<>();
         obstacles = new ArrayList<>();
         obstacles.add(new Obstacle(this.width, this.height));
+
+        population = new ArrayList<>();
+        for (int i = 0; i < POPULATION_SIZE; i++) {
+            if (generation < 12) {
+                population.add(new Player(y));
+            } else {
+                /* TODO add player with second constructor, that is with parents. */
+            }
+        }
+
 
         /* Create stars */
         for (int i = 0; i < NUMBER_OF_STARS; i++) {
@@ -71,9 +85,11 @@ public class World implements Commons {
         }
 
         /* If player is alive draw it */
-        if (player.isAlive()) {
-            gc.setFill(this.player.getImage());
-            gc.fillRect(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+        for (Player player : population) {
+            if (player.isAlive()) {
+                gc.setFill(player.getImage());
+                gc.fillRect(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+            }
         }
 
         /* Set text to the score value. */
@@ -151,15 +167,24 @@ public class World implements Commons {
             /* If there is player collision with any object end game,
             * else if player successfully passes obstacle increment score.
             * */
-            if (player.isCollision(obstacle)) {
-                player.kill();
-            } else if (obstacle.getX() + obstacle.getWidth() == player.getX()) {
-                player.setClosestObstacle(obstacles);
-                this.score++;
+            Iterator<Player> playerIter = population.iterator();
+            while (playerIter.hasNext()){
+                Player player = playerIter.next();
+                if (player.isCollision(obstacle)) {
+                    player.kill();
+                    playerIter.remove();
+                } else if (obstacle.getX() + obstacle.getWidth() == player.getX()) {
+                    this.score++;
+                }
             }
         }
+
+        for (Player player : population) {
+            player.setClosestObstacle(obstacles);
+            player.move();
+            player.execTree();
+        }
         moveStars();
-        this.player.move();
 
     }
 
@@ -169,9 +194,9 @@ public class World implements Commons {
      *
      * @return instance of player.
      */
-    public Player getPlayer() {
+   /* public Player getPlayer() {
         return player;
-    }
+    }*/
 
 
     /**
@@ -181,5 +206,10 @@ public class World implements Commons {
      */
     public Text getText() {
         return text;
+    }
+
+    public boolean allDead() {
+
+        return population.isEmpty();
     }
 }

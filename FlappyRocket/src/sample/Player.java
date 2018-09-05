@@ -14,9 +14,8 @@ public class Player extends Sprite implements Commons {
     private double v;
     private int canvHeight;
     private boolean alive;
-    /* Each player should have score (rather than one score for the world)
-     * and it should be incremented by passing the obstacles */
-    private int score;
+    /* Each player has fitness on which it's performance will be judged */
+    private int fitness;
 
     /* Params of the player which helps in making the decisions
      * should be final, but need to assign them out by the method
@@ -40,6 +39,7 @@ public class Player extends Sprite implements Commons {
         this.width = PLAYER_WIDTH;
         this.height = PLAYER_HEIGHT;
         this.alive = true;
+        this.fitness = 0;
 
         Image texture = new Image("file:/Users/mateuszmeller/Desktop/programowanie/FlappyRocket/src/sample/spaceship 2/spaceship2.png");
         this.image = new ImagePattern(texture);
@@ -70,6 +70,7 @@ public class Player extends Sprite implements Commons {
             this.v += ACC;
         }
         this.y += this.v;
+        this.fitness++;
     }
 
 
@@ -253,4 +254,15 @@ public class Player extends Sprite implements Commons {
             this.closestObstacle = obstacles.get(1);
         }
     }
+
+    public void execTree() {
+        exeInstr(this.decisionTree);
+    }
+
+    public int getFitness() {
+        return fitness;
+    }
+
+    /* TODO add genetic mixes - mix tree and mix params
+    * TODO add second constructor - with a parent */
 }
