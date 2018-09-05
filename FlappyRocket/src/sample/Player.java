@@ -6,6 +6,7 @@ import javafx.scene.paint.ImagePattern;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
 
 
 public class Player extends Sprite implements Commons {
@@ -26,6 +27,8 @@ public class Player extends Sprite implements Commons {
     private int MIN_TO_ROOF;
     private int MIN_TO_GROUND;
     private TreeNode decisionTree;
+    //private ArrayList<Obstacle> closestObstacles;
+    private Obstacle closestObstacle;
 
     /* TODO add theta and rotation of a player (based on free fall) */
 
@@ -37,14 +40,23 @@ public class Player extends Sprite implements Commons {
         this.width = PLAYER_WIDTH;
         this.height = PLAYER_HEIGHT;
         this.alive = true;
-        //this.probability = 0.01; // TODO assing random and the use genetic algorithm
 
         Image texture = new Image("file:/Users/mateuszmeller/Desktop/programowanie/FlappyRocket/src/sample/spaceship 2/spaceship2.png");
         this.image = new ImagePattern(texture);
 
-        this.decisionTree = new TreeNode(5);
+        this.decisionTree = new TreeNode(2);
+        setParams();
         generateDecisionTree(decisionTree);
         System.out.println(decisionTree.inOrderTraversal(decisionTree));
+    }
+
+    /**
+     * Gets y position the player.
+     *
+     * @return y position of the player.
+     */
+    public double getY() {
+        return y;
     }
 
 
@@ -103,81 +115,95 @@ public class Player extends Sprite implements Commons {
 
 
     /**
-     * Gets y position the player.
-     *
-     * @return y position of the player.
+     * Method which waits for the next action - opposite of jump().
      */
-    public double getY() {
-        return y;
+    public void waitForNext() {
+        /* DO NOTHING */
     }
 
 
-    /**
-     * Actually I can model this by assigning first four obstacles in the arrayList
-     * as it is sorted naturally by the proximity to the player.
-     *
-     * @param obstacles - arrayList of all the obstacles
-     * @return arrayList of closest obstacles.
-     */
-    public ArrayList<Obstacle> detectObstacles(ArrayList<Obstacle> obstacles) {
-        ArrayList<Obstacle> closestObstacles = new ArrayList<>();
-        /*for (int i = 0; i < closestObstacles.size(); i++) {
-            if (!closestObstacles.contains(obstacles.get(i))) {
-                closestObstacles.add(obstacles.get(i));
-            } else {
-                closestObstacles.remove(obstacles.get(i));
-            }
-        }*/
-        closestObstacles.add(obstacles.get(0));
-        return closestObstacles;
+    public void do2(TreeNode instrNode1, TreeNode instrNode2) {
+        exeInstr(instrNode1);
+        exeInstr(instrNode2);
     }
 
 
-    /**
-     * Based on the agent parameters ,
-     * distance to and height of the obstacle - act, that is call jump()
-     *
-     * @param closestObstacles arrayList of obstacles that is closest and should act on.
-     */
-    public void act(ArrayList<Obstacle> closestObstacles) {
-        ArrayList<Integer> decisionSet = this.decisionTree.inOrderTraversal(this.decisionTree);
-        for (Integer decision : decisionSet) {
-            switch (decision) {
-                case 0:
-                    jump();
-                    break;
-                case 1:
-                    waitForNext();
-                    break;
-                case 2:
-                    tooLow();
-                    break;
-                case 3:
-                    tooHigh();
-                    break;
-                case 4:
-                    obstacleAhead(closestObstacles.get(0));
-                    break;
-                case 5:
-                    setParams();
-                    break;
-                default:
-                    waitForNext();
-                    break;
-            }
+    public void do3(TreeNode instrNode1, TreeNode instrNode2, TreeNode instrNode3) {
+        exeInstr(instrNode1);
+        exeInstr(instrNode2);
+        exeInstr(instrNode3);
+    }
+
+
+    public void obstacleAhead(TreeNode instrNode1, TreeNode instrNode2, TreeNode instrNode3) {
+        if (isCloseToObstacle(this.closestObstacle) && !obstacleAbove(this.closestObstacle) && canPassLower(this.closestObstacle)) {
+            exeInstr(instrNode1);
+        } else if (isCloseToObstacle(this.closestObstacle) && obstacleAbove(this.closestObstacle) && canPassUpper(this.closestObstacle)) {
+            exeInstr(instrNode2);
+        } else {
+            exeInstr(instrNode3);
+        }
+    }
+
+
+    public void tooHigh(TreeNode instrNode1, TreeNode instrNode2) {
+        if (this.y < this.MIN_TO_ROOF) {
+            exeInstr(instrNode1);
+        } else {
+            exeInstr(instrNode2);
+        }
+    }
+
+
+    public void tooLow(TreeNode instrNode1, TreeNode instrNode2) {
+        if (this.y > MIN_TO_GROUND) {
+            exeInstr(instrNode1);
+        } else {
+            exeInstr(instrNode2);
+        }
+    }
+
+
+    public void exeInstr(TreeNode instructionNode) {
+        switch (instructionNode.getDecision()) {
+            case 0:
+                jump();
+                break;
+            case 1:
+                waitForNext();
+                break;
+            case 2:
+                obstacleAhead(instructionNode.getChild(0), instructionNode.getChild(1), instructionNode.getChild(2));
+                break;
+            case 3:
+                tooHigh(instructionNode.getChild(0), instructionNode.getChild(1));
+                break;
+            case 4:
+                tooLow(instructionNode.getChild(0), instructionNode.getChild(1));
+                break;
+            case 5:
+                do2(instructionNode.getChild(0), instructionNode.getChild(1));
+                break;
+            case 6:
+                do3(instructionNode.getChild(0), instructionNode.getChild(1), instructionNode.getChild(2));
+                break;
+            default:
+                waitForNext();
+                break;
         }
     }
 
 
     /**
-     * Method which waits for the next action - opposite of jump().
+     * Sets parameters on which decision will be made.
+     * Randomly assigns them - use for the first generation.
      */
-    public void waitForNext() {
-        /*try {
-            Thread.sleep(100);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }*/
+    public void setParams() {
+        Random rnd = new Random();
+        this.MIN_X = rnd.nextDouble() * GAME_WIDTH / 2;
+        this.MIN_Y = (int) (rnd.nextDouble() * GAME_HEIGHT / 3);
+        this.MIN_TO_GROUND = (int) (rnd.nextDouble() * GAME_HEIGHT);
+        this.MIN_TO_ROOF = (int) (rnd.nextDouble() * GAME_HEIGHT);
     }
 
 
@@ -193,24 +219,6 @@ public class Player extends Sprite implements Commons {
 
 
     /**
-     * Sets parameters on which decision will be made.
-     * Randomly assigns them - use for the first generation.
-     */
-    public void setParams() {
-        Random rnd = new Random();
-        this.MIN_X = rnd.nextDouble() * 100;
-        this.MIN_Y = (int) rnd.nextDouble() * 150;
-        this.MIN_TO_GROUND = (int) rnd.nextDouble() * 100 + 500;
-        this.MIN_TO_ROOF = (int) rnd.nextDouble() * 50;
-    }
-
-    /* TODO mix 'genes' from the parents */
-    /*public void setParams(Player parent) {
-
-    }*/
-
-
-    /**
      * Test whether obstacle is pointing from the top.
      *
      * @param obstacle to be tested.
@@ -220,65 +228,29 @@ public class Player extends Sprite implements Commons {
         return obstacle.getY() == 0;
     }
 
-    public boolean canPass(Obstacle obstacle) {
-        return obstacle.getY() > this.y;
+    public boolean canPassUpper(Obstacle obstacle) {
+        return (obstacle.getY() + obstacle.getHeight() < this.y);
+
+    }
+
+    public boolean canPassLower(Obstacle obstacle) {
+        return this.y < obstacle.getY();
     }
 
 
-    /**
-     * If agent is too high (danger of upper out of bound) - wait.
-     */
-    public void tooHigh() {
-        if (this.y < this.MIN_TO_ROOF) {
-            waitForNext();
+    public void generateDecisionTree(TreeNode root) {
+        root.addChild();
+        for (TreeNode child : root.getChildren()) {
+            generateDecisionTree(child);
         }
     }
 
 
-    /**
-     * If agent is too close to the ground - jump, wait otherwise.
-     */
-    public void tooLow() {
-        if (this.canvHeight - this.y < MIN_TO_GROUND) {
-            jump();
+    public void setClosestObstacle(ArrayList<Obstacle> obstacles) {
+        if (this.y < obstacles.get(0).getX()) {
+            this.closestObstacle = obstacles.get(0);
         } else {
-            waitForNext();
+            this.closestObstacle = obstacles.get(1);
         }
     }
-
-
-    /**
-     * If obstacle is close enough and pointing from the bottom
-     * jump 3 times.
-     *
-     * @param obstacle object which is closest and tested.
-     */
-    public void obstacleAhead(Obstacle obstacle) {
-        if (!obstacleAbove(obstacle) && isCloseToObstacle(obstacle)) {
-            while (!canPass(obstacle)) {
-                jump();
-            }
-        }
-    }
-
-
-    public TreeNode generateDecisionTree(TreeNode root) {
-        Random rnd = new Random();
-
-        if (root.hasChildren()) {
-            for (int i = 0; i < TreeNode.getMaxNumberOfNodes(); i++) {
-                double tryDecision = rnd.nextDouble();
-                if (tryDecision <= 0.4) {
-                    int decisionType = rnd.nextInt(5);
-                    root.addChild(new TreeNode(decisionType));
-                }
-            }
-
-            for (TreeNode child : root.getChildren()) {
-                generateDecisionTree(child);
-            }
-        }
-        return root;
-    }
-
 }

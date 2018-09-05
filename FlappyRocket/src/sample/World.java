@@ -154,12 +154,13 @@ public class World implements Commons {
             if (player.isCollision(obstacle)) {
                 player.kill();
             } else if (obstacle.getX() + obstacle.getWidth() == player.getX()) {
+                player.setClosestObstacle(obstacles);
                 this.score++;
             }
         }
         moveStars();
         this.player.move();
-        this.player.act(this.player.detectObstacles(obstacles));
+
     }
 
 
