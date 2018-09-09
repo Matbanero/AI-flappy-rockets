@@ -164,11 +164,9 @@ public class World implements Commons {
                 iter.remove();
             }
 
-            /* If there is player collision with any object end game,
-            * else if player successfully passes obstacle increment score.
-            * */
+
             Iterator<Player> playerIter = population.iterator();
-            while (playerIter.hasNext()){
+            while (playerIter.hasNext()) {
                 Player player = playerIter.next();
                 if (player.isCollision(obstacle)) {
                     player.kill();
@@ -179,6 +177,9 @@ public class World implements Commons {
             }
         }
 
+        /* For every player in the population, find closet obstacle,
+        * move and execute decision tree.
+        * */
         for (Player player : population) {
             player.setClosestObstacle(obstacles);
             player.move();
@@ -208,6 +209,12 @@ public class World implements Commons {
         return text;
     }
 
+
+    /**
+     * Checks if the whole population is dead.
+     *
+     * @return true if population is empty i.e. dead, false otherwise.
+     */
     public boolean allDead() {
 
         return population.isEmpty();

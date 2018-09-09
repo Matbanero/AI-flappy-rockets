@@ -26,7 +26,6 @@ public class Player extends Sprite implements Commons {
     private int MIN_TO_ROOF;
     private int MIN_TO_GROUND;
     private TreeNode decisionTree;
-    //private ArrayList<Obstacle> closestObstacles;
     private Obstacle closestObstacle;
 
     /* TODO add theta and rotation of a player (based on free fall) */
@@ -47,7 +46,23 @@ public class Player extends Sprite implements Commons {
         this.decisionTree = new TreeNode(2);
         setParams();
         generateDecisionTree(decisionTree);
-        System.out.println(decisionTree.inOrderTraversal(decisionTree));
+        //System.out.println(decisionTree.inOrderTraversal(decisionTree));
+    }
+
+    public Player(int canvasHeight, Player parent1, Player parent2) {
+        this.x = PLAYER_START_X;
+        this.y = canvasHeight / 2;
+        this.v = 0;
+        this.canvHeight = canvasHeight;
+        this.width = PLAYER_WIDTH;
+        this.height = PLAYER_HEIGHT;
+        this.alive = true;
+        this.fitness = 0;
+
+        Image texture = new Image("file:/Users/mateuszmeller/Desktop/programowanie/FlappyRocket/src/sample/spaceship 2/spaceship2.png");
+        this.image = new ImagePattern(texture);
+        born(parent1, parent2);
+        inheritParams(parent1, parent2);
     }
 
     /**
@@ -123,12 +138,25 @@ public class Player extends Sprite implements Commons {
     }
 
 
+    /**
+     * This method executes 2 instructions (methods ultimately) in order.
+     *
+     * @param instrNode1 first instruction to be executed.
+     * @param instrNode2 second instruction to be executed.
+     */
     public void do2(TreeNode instrNode1, TreeNode instrNode2) {
         exeInstr(instrNode1);
         exeInstr(instrNode2);
     }
 
 
+    /**
+     * This method executes 3 instructions (methods ultimately) in order.
+     *
+     * @param instrNode1 first instruction to be executed.
+     * @param instrNode2 second instruction to be executed.
+     * @param instrNode3 third instruction to be executed.
+     */
     public void do3(TreeNode instrNode1, TreeNode instrNode2, TreeNode instrNode3) {
         exeInstr(instrNode1);
         exeInstr(instrNode2);
@@ -208,6 +236,15 @@ public class Player extends Sprite implements Commons {
     }
 
 
+    /* Wierd not sure why I can access parents parameters - as they are private... */
+    private void inheritParams(Player parent1, Player parent2) {
+        this.MIN_X = parent1.MIN_X;
+        this.MIN_TO_ROOF = parent2.MIN_TO_ROOF;
+        this.MIN_TO_GROUND = parent2.MIN_TO_GROUND;
+        this.MIN_Y = parent1.MIN_Y;
+    }
+
+
     /**
      * Test if the obstacle is close and should act
      *
@@ -265,4 +302,16 @@ public class Player extends Sprite implements Commons {
 
     /* TODO add genetic mixes - mix tree and mix params
     * TODO add second constructor - with a parent */
+
+    public void born(Player parent1, Player parent2) {
+        this.decisionTree = parent1.decisionTree.geneticCutter(parent1.decisionTree);
+        TreeNode temp = this.decisionTree;
+        if (temp.hasChildren() && !temp.getChildren().isEmpty()) {
+            for (TreeNode child : temp.getChildren()) {
+                if (child.getDecision())
+            }
+        }
+
+
+    }
 }

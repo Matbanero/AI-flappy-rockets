@@ -63,22 +63,36 @@ public class TreeNode {
         return decision;
     }
 
-    public ArrayList<Integer> inOrderTraversal(TreeNode root) {
 
-        ArrayList<Integer> decisionSet = new ArrayList<>();
-        if (root.children != null && !root.children.isEmpty()) {
-            decisionSet.add(root.decision);
-            for (int i = 0; i < root.children.size(); i++) {
-                decisionSet.addAll(inOrderTraversal(root.children.get(i)));
+    /* TODO change it so it tries to split the tree and return it - need for spawning new children */
+    public TreeNode geneticCutter(TreeNode root) {
+
+        Random rnd = new Random();
+        double cutProbs = rnd.nextDouble();
+        TreeNode geneticTree = null;
+
+        if (cutProbs < 0.2) {
+            return root;
+        } else if (root.children != null && !root.children.isEmpty()) {
+            /* Using while loop to terminate it after first occurence of valid
+            * genetic tree - i.e. when cutProbs < 0.2 */
+            int i = 0;
+            while (geneticTree == null && i < root.children.size()) {
+                geneticTree = geneticCutter(root.getChild(i));
+                i++;
             }
-            /*for (int i = root.children.size() / 2; i < root.children.size(); i++) {
-                decisionSet.addAll(inOrderTraversal(root.children.get(i)));
-            }*/
+            return geneticTree;
+
         } else {
-            decisionSet.add(root.decision);
+            return null;
         }
 
-        return decisionSet;
+    }
+
+    public TreeNode findSpace(TreeNode tree) {
+        if (tree == null) {
+            return tree;
+        } else
     }
 
     public boolean hasChildren() {
