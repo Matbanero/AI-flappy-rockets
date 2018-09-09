@@ -304,14 +304,8 @@ public class Player extends Sprite implements Commons {
     * TODO add second constructor - with a parent */
 
     public void born(Player parent1, Player parent2) {
-        this.decisionTree = parent1.decisionTree.geneticCutter(parent1.decisionTree);
-        TreeNode temp = this.decisionTree;
-        if (temp.hasChildren() && !temp.getChildren().isEmpty()) {
-            for (TreeNode child : temp.getChildren()) {
-                if (child.getDecision())
-            }
-        }
-
-
+        /* TODO rather then assigning split of a tree, assign orgin tree with a cut branch */
+        this.decisionTree = parent2.decisionTree;
+        decisionTree.geneticX(decisionTree, parent1.decisionTree.geneticY(parent1.decisionTree));
     }
 }

@@ -21,6 +21,7 @@ public class World implements Commons {
     private Text text;
     private static final int STAR_RAD = 3;
     private ArrayList<Player> population;
+    private ArrayList<Player> fittestAncestors;
 
 
     public World(int x, int y) {
