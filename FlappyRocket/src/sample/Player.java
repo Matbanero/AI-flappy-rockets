@@ -61,8 +61,9 @@ public class Player extends Sprite implements Commons {
 
         Image texture = new Image("file:/Users/mateuszmeller/Desktop/programowanie/FlappyRocket/src/sample/spaceship 2/spaceship2.png");
         this.image = new ImagePattern(texture);
-        born(parent1, parent2);
         inheritParams(parent1, parent2);
+        born(parent1, parent2);
+        mutate();
     }
 
     /**
@@ -96,12 +97,17 @@ public class Player extends Sprite implements Commons {
      * @return true if there is collision, false otherwise.
      */
     public boolean isCollision(Obstacle obstacle) {
-        return this.y + this.height > this.canvHeight || this.y < 0 ||
-                !(obstacle.getX() > this.x + this.width ||
-                        obstacle.getX() + obstacle.getWidth() < this.x ||
-                        obstacle.getY() > this.y + this.height ||
-                        obstacle.getY() + obstacle.getHeight() < this.y);
+        return !(obstacle.getX() >= this.x + this.width ||
+                obstacle.getX() + obstacle.getWidth() <= this.x ||
+                obstacle.getY() >= this.y + this.height ||
+                obstacle.getY() + obstacle.getHeight() <= this.y);
     }
+
+    public boolean isInOfBounds() {
+        return (this.y > 0) && (this.y + this.height < this.canvHeight);
+    }
+
+    /* TODO Solve major problem with collision detection - game doesn't stop after collision. */
 
 
     /**
@@ -176,7 +182,7 @@ public class Player extends Sprite implements Commons {
 
 
     public void tooHigh(TreeNode instrNode1, TreeNode instrNode2) {
-        if (this.y < this.MIN_TO_ROOF) {
+        if (this.y <= this.MIN_TO_ROOF) {
             exeInstr(instrNode1);
         } else {
             exeInstr(instrNode2);
@@ -185,7 +191,7 @@ public class Player extends Sprite implements Commons {
 
 
     public void tooLow(TreeNode instrNode1, TreeNode instrNode2) {
-        if (this.y > MIN_TO_GROUND) {
+        if (this.y >= MIN_TO_GROUND) {
             exeInstr(instrNode1);
         } else {
             exeInstr(instrNode2);
@@ -231,8 +237,8 @@ public class Player extends Sprite implements Commons {
         Random rnd = new Random();
         this.MIN_X = rnd.nextDouble() * GAME_WIDTH / 2;
         this.MIN_Y = (int) (rnd.nextDouble() * GAME_HEIGHT / 3);
-        this.MIN_TO_GROUND = (int) (rnd.nextDouble() * GAME_HEIGHT);
-        this.MIN_TO_ROOF = (int) (rnd.nextDouble() * GAME_HEIGHT);
+        this.MIN_TO_GROUND = (int) (rnd.nextDouble() * GAME_HEIGHT / 2 + GAME_HEIGHT / 2);
+        this.MIN_TO_ROOF = (int) (rnd.nextDouble() * GAME_HEIGHT / 4);
     }
 
 
@@ -252,7 +258,7 @@ public class Player extends Sprite implements Commons {
      * @return true if agent is too close and should act, false otherwise.
      */
     public boolean isCloseToObstacle(Obstacle obstacle) {
-        return obstacle.getX() - this.x < MIN_X;
+        return obstacle.getX() - this.x <= MIN_X;
     }
 
 
@@ -281,11 +287,13 @@ public class Player extends Sprite implements Commons {
         for (TreeNode child : root.getChildren()) {
             generateDecisionTree(child);
         }
+
+
     }
 
 
     public void setClosestObstacle(ArrayList<Obstacle> obstacles) {
-        if (this.y < obstacles.get(0).getX()) {
+        if (this.x < obstacles.get(0).getX()) {
             this.closestObstacle = obstacles.get(0);
         } else {
             this.closestObstacle = obstacles.get(1);
@@ -300,12 +308,39 @@ public class Player extends Sprite implements Commons {
         return fitness;
     }
 
-    /* TODO add genetic mixes - mix tree and mix params
-    * TODO add second constructor - with a parent */
 
     public void born(Player parent1, Player parent2) {
         /* TODO rather then assigning split of a tree, assign orgin tree with a cut branch */
         this.decisionTree = parent2.decisionTree;
-        decisionTree.geneticX(decisionTree, parent1.decisionTree.geneticY(parent1.decisionTree));
+        TreeNode temp = this.decisionTree;
+        Random rnd = new Random();
+        for (int i = 0; i < 3; i++) {
+            if (!temp.getChildren().isEmpty()) {
+                int chooseChild = rnd.nextInt(temp.getNumberOfChildren() - 1);
+                if (chooseChild < 0) {
+                    chooseChild = 0;
+                } else if (chooseChild > 3) {
+                    chooseChild = 3;
+                }
+                temp = temp.getChild(chooseChild);
+            }
+        }
+        temp = parent1.decisionTree;
+        this.decisionTree = temp;
+        // decisionTree.geneticX(decisionTree, parent1.decisionTree.geneticY(parent1.decisionTree));
+    }
+
+    private void mutate() {
+        Random rnd = new Random();
+        double mutCoof = rnd.nextDouble();
+
+        if (mutCoof < 0.1) {
+            generateDecisionTree(this.decisionTree);
+            setParams();
+        }
+    }
+
+    public void setAlive() {
+        this.alive = true;
     }
 }

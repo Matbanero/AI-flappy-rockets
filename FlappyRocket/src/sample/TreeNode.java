@@ -14,7 +14,6 @@ public class TreeNode {
     }
 
     public void addChild() {
-
         switch (this.decision) {
             case 0:
                 break;
@@ -65,7 +64,8 @@ public class TreeNode {
 
 
     /* TODO change it so it tries to split the tree and return it - need for spawning new children */
-    public TreeNode geneticY(TreeNode root) {
+    /* TODO geneticY and geneticX need major rework, possibly should implement heaps. */
+   /* public TreeNode geneticY(TreeNode root) {
 
         Random rnd = new Random();
         double cutProbs = rnd.nextDouble();
@@ -75,8 +75,8 @@ public class TreeNode {
             geneticTree = root;
             return geneticTree;
         } else if (root.children != null && !root.children.isEmpty()) {
-            /* Using while loop to terminate it after first occurence of valid
-            * genetic tree - i.e. when cutProbs < 0.2 */
+            *//* Using while loop to terminate it after first occurence of valid
+            * genetic tree - i.e. when cutProbs < 0.2 *//*
             int i = 0;
             while (geneticTree == null && i < root.children.size()) {
                 geneticTree = geneticY(root.getChild(i));
@@ -102,31 +102,13 @@ public class TreeNode {
         return root;
     }
 
+*/
+
     public boolean tryInsert() {
         Random rnd = new Random();
         double insertProb = rnd.nextDouble();
 
         return insertProb < 0.35;
-    }
-
-    /* Can optimize it with heap??? */
-    public int findSpace(TreeNode tree) {
-        if (tree == null) {
-            return -1;
-        } else {
-            TreeNode temp = tree;
-            int j = 0;
-            while (temp.hasChildren()) {
-                for (int i = 0; i < temp.children.size(); i++) {
-                    if (temp.children.get(i) == null) {
-                        return i;
-                    }
-                }
-                temp = temp.getChild(j);
-                j++;
-            }
-            return -2;
-        }
     }
 
     public boolean hasChildren() {
@@ -135,6 +117,10 @@ public class TreeNode {
 
     public ArrayList<TreeNode> getChildren() {
         return children;
+    }
+
+    public int getNumberOfChildren() {
+        return children.size();
     }
 
     private TreeNode createNode() {
@@ -146,17 +132,17 @@ public class TreeNode {
         * (jump and waitForNext eg. 0 and 1). Using this hack because trees can grow large and
         * cause stackOverflowExceptions. */
 
-        if (decisionPicker < 0.3) {
+        if (decisionPicker < 0.2) {
             node = new TreeNode(0);
-        } else if (decisionPicker >= 0.3 && decisionPicker < 0.6) {
+        } else if (decisionPicker >= 0.2 && decisionPicker < 0.6) {
             node = new TreeNode(1);
-        } else if (decisionPicker >= 0.84 && decisionPicker < 0.92) {
+        } else if (decisionPicker >= 0.6 && decisionPicker < 0.7) {
             node = new TreeNode(2);
-        } else if (decisionPicker >= 0.6 && decisionPicker < 0.72) {
+        } else if (decisionPicker >= 0.7 && decisionPicker < 0.8) {
             node = new TreeNode(3);
-        } else if (decisionPicker >= 0.72 && decisionPicker < 0.84) {
+        } else if (decisionPicker >= 0.8 && decisionPicker < 0.9) {
             node = new TreeNode(4);
-        } else if (decisionPicker >= 0.92 && decisionPicker < 0.96) {
+        } else if (decisionPicker >= 0.9 && decisionPicker < 0.95) {
             node = new TreeNode(5);
         } else {
             node = new TreeNode(6);

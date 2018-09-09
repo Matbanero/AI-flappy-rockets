@@ -2,6 +2,7 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -22,7 +23,7 @@ public class Main extends Application implements Commons {
         final World[] world = {new World(Commons.GAME_WIDTH, Commons.GAME_HEIGHT)};
         Group root = new Group();
 
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("AI Flappy Rockets");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         Canvas canvas = new Canvas(GAME_WIDTH, GAME_HEIGHT);
@@ -41,7 +42,7 @@ public class Main extends Application implements Commons {
                         }*/
 
                         /* If player is dead and presses R - restart game. */
-                        if (world[0].allDead() && event.getCode() == KeyCode.R) {
+                        if (world[0].allDead() && event.getCode() == KeyCode.R && World.getGeneration() < MAX_GENERATION) {
                             root.getChildren().remove(world[0].getText());
                             world[0] = new World(Commons.GAME_WIDTH, Commons.GAME_HEIGHT);
                             root.getChildren().add(world[0].getText());

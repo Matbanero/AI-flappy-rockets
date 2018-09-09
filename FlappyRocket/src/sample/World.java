@@ -17,30 +17,37 @@ public class World implements Commons {
     private int score;
     private ArrayList<Obstacle> obstacles;
     private ArrayList<Circle> stars;
-    //private Player player;
     private Text text;
     private static final int STAR_RAD = 3;
     private ArrayList<Player> population;
-    private ArrayList<Player> fittestAncestors;
+    private static ArrayList<Player> fittestAncestors = new ArrayList<>();
 
 
     public World(int x, int y) {
         this.width = x;
         this.height = y;
         this.score = 0;
-        this.generation++;
-        //player = new Player(y);
+        generation++;
         stars = new ArrayList<>();
         obstacles = new ArrayList<>();
         obstacles.add(new Obstacle(this.width, this.height));
 
         population = new ArrayList<>();
-        for (int i = 0; i < POPULATION_SIZE; i++) {
-            if (generation < 12) {
+        if (generation < 2 || (fittestAncestors.get(fittestAncestors.size() - 1).getFitness() < MIN_FITNESS)) {
+            for (int i = 0; i < POPULATION_SIZE; i++) {
                 population.add(new Player(y));
-            } else {
-                /* TODO add player with second constructor, that is with parents. */
             }
+        } else {
+            for (Player ancestor : fittestAncestors) {
+                ancestor.setAlive();
+            }
+            population.addAll(fittestAncestors);
+            int j = POPULATION_SIZE / 2 - 1;
+            for (int i = 0; i < POPULATION_SIZE / 2; i++) {
+                population.add(new Player(y, fittestAncestors.get(i), fittestAncestors.get(j)));
+                j--;
+            }
+            fittestAncestors.clear();
         }
 
 
@@ -169,9 +176,12 @@ public class World implements Commons {
             Iterator<Player> playerIter = population.iterator();
             while (playerIter.hasNext()) {
                 Player player = playerIter.next();
-                if (player.isCollision(obstacle)) {
+                if (!player.isInOfBounds() || player.isCollision(obstacle)) {
                     player.kill();
                     playerIter.remove();
+                    if (population.size() < POPULATION_SIZE / 2) {
+                        fittestAncestors.add(player);
+                    }
                 } else if (obstacle.getX() + obstacle.getWidth() == player.getX()) {
                     this.score++;
                 }
@@ -192,16 +202,6 @@ public class World implements Commons {
 
 
     /**
-     * Gets player object.
-     *
-     * @return instance of player.
-     */
-   /* public Player getPlayer() {
-        return player;
-    }*/
-
-
-    /**
      * Gets the text (score).
      *
      * @return text which shows the score.
@@ -217,7 +217,11 @@ public class World implements Commons {
      * @return true if population is empty i.e. dead, false otherwise.
      */
     public boolean allDead() {
-
         return population.isEmpty();
+    }
+
+
+    public static int getGeneration() {
+        return generation;
     }
 }
