@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="80fda048-6815-4e30-bccc-db0ea90be104" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FlappyRocket/src/sample/Player.java" afterPath="$PROJECT_DIR$/FlappyRocket/src/sample/Player.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FlappyRocket/src/sample/TreeNode.java" afterPath="$PROJECT_DIR$/FlappyRocket/src/sample/TreeNode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FlappyRocket/src/sample/World.java" afterPath="$PROJECT_DIR$/FlappyRocket/src/sample/World.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,7 +30,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="World.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="World.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/FlappyRocket/src/sample/World.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
@@ -55,11 +53,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TreeNode.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TreeNode.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/FlappyRocket/src/sample/TreeNode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="614">
-              <caret line="99" column="13" lean-forward="true" selection-start-line="99" selection-start-column="13" selection-end-line="99" selection-end-column="13" />
+            <state relative-caret-position="287">
+              <caret line="86" column="16" lean-forward="true" selection-start-line="86" selection-start-column="16" selection-end-line="86" selection-end-column="16" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#TreeNode#0;class#TreeNode#0" expanded="false" />
@@ -307,12 +305,12 @@
       <option name="presentableId" value="Default" />
       <updated>1536053945169</updated>
       <workItem from="1536053948806" duration="32986000" />
-      <workItem from="1536509253827" duration="2826000" />
+      <workItem from="1536509253827" duration="2940000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35812000" />
+    <option name="totallyTimeSpent" value="35926000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
@@ -457,15 +455,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/FlappyRocket/src/sample/TreeNode.java">
+    <entry file="file://$PROJECT_DIR$/FlappyRocket/src/sample/Commons.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="614">
-          <caret line="99" column="13" lean-forward="true" selection-start-line="99" selection-start-column="13" selection-end-line="99" selection-end-column="13" />
+        <state relative-caret-position="270">
+          <caret line="18" column="27" lean-forward="false" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FlappyRocket/src/sample/World.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="23" column="47" lean-forward="false" selection-start-line="23" selection-start-column="47" selection-end-line="23" selection-end-column="47" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#TreeNode#0;class#TreeNode#0" expanded="false" />
-            <element signature="method#addChild#0;class#TreeNode#0" expanded="false" />
-            <element signature="method#createNode#0;class#TreeNode#0" expanded="false" />
+            <element signature="method#moveStars#0;class#World#0" expanded="false" />
+            <element signature="method#allDead#0;class#World#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -488,21 +492,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/FlappyRocket/src/sample/Commons.java">
+    <entry file="file://$PROJECT_DIR$/FlappyRocket/src/sample/TreeNode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="27" lean-forward="false" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/FlappyRocket/src/sample/World.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="23" column="47" lean-forward="false" selection-start-line="23" selection-start-column="47" selection-end-line="23" selection-end-column="47" />
+        <state relative-caret-position="287">
+          <caret line="86" column="16" lean-forward="true" selection-start-line="86" selection-start-column="16" selection-end-line="86" selection-end-column="16" />
           <folding>
-            <element signature="method#moveStars#0;class#World#0" expanded="false" />
-            <element signature="method#allDead#0;class#World#0" expanded="false" />
+            <element signature="imports" expanded="true" />
+            <element signature="method#TreeNode#0;class#TreeNode#0" expanded="false" />
+            <element signature="method#addChild#0;class#TreeNode#0" expanded="false" />
+            <element signature="method#createNode#0;class#TreeNode#0" expanded="false" />
           </folding>
         </state>
       </provider>
