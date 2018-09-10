@@ -16,6 +16,7 @@ public class Player extends Sprite implements Commons {
     private boolean alive;
     /* Each player has fitness on which it's performance will be judged */
     private int fitness;
+    private int score;
 
     /* Params of the player which helps in making the decisions
      * should be final, but need to assign them out by the method
@@ -39,6 +40,7 @@ public class Player extends Sprite implements Commons {
         this.height = PLAYER_HEIGHT;
         this.alive = true;
         this.fitness = 0;
+        this.score = 0;
 
         Image texture = new Image("file:/Users/mateuszmeller/Desktop/programowanie/FlappyRocket/src/sample/spaceship 2/spaceship2.png");
         this.image = new ImagePattern(texture);
@@ -58,6 +60,7 @@ public class Player extends Sprite implements Commons {
         this.height = PLAYER_HEIGHT;
         this.alive = true;
         this.fitness = 0;
+        this.score = 0;
 
         Image texture = new Image("file:/Users/mateuszmeller/Desktop/programowanie/FlappyRocket/src/sample/spaceship 2/spaceship2.png");
         this.image = new ImagePattern(texture);
@@ -235,8 +238,8 @@ public class Player extends Sprite implements Commons {
      */
     public void setParams() {
         Random rnd = new Random();
-        this.MIN_X = rnd.nextDouble() * GAME_WIDTH / 2;
-        this.MIN_Y = (int) (rnd.nextDouble() * GAME_HEIGHT / 3);
+        this.MIN_X = rnd.nextDouble() * GAME_WIDTH;
+        this.MIN_Y = (int) (rnd.nextDouble() * GAME_HEIGHT / 2);
         this.MIN_TO_GROUND = (int) (rnd.nextDouble() * GAME_HEIGHT / 2 + GAME_HEIGHT / 2);
         this.MIN_TO_ROOF = (int) (rnd.nextDouble() * GAME_HEIGHT / 4);
     }
@@ -258,7 +261,11 @@ public class Player extends Sprite implements Commons {
      * @return true if agent is too close and should act, false otherwise.
      */
     public boolean isCloseToObstacle(Obstacle obstacle) {
-        return obstacle.getX() - this.x <= MIN_X;
+        return obstacle.getX() - this.x <= MIN_X &&
+                ((obstacle.getY() < this.y + MIN_Y / 2 &&
+                        obstacle.getY() > this.y) ||
+                obstacle.getY() + obstacle.getHeight() > this.y - MIN_Y / 2 &&
+                obstacle.getY() + obstacle.getHeight() < this.y);
     }
 
 
@@ -293,10 +300,13 @@ public class Player extends Sprite implements Commons {
 
 
     public void setClosestObstacle(ArrayList<Obstacle> obstacles) {
-        if (this.x < obstacles.get(0).getX()) {
+        double distance = this.x + MIN_X;
+        if (this.x + MIN_X / 4 < obstacles.get(0).getX()) {
             this.closestObstacle = obstacles.get(0);
-        } else {
+        } else if (distance < obstacles.get(1).getX()){
             this.closestObstacle = obstacles.get(1);
+        } else {
+            this.closestObstacle = obstacles.get(2);
         }
     }
 
@@ -310,11 +320,11 @@ public class Player extends Sprite implements Commons {
 
 
     public void born(Player parent1, Player parent2) {
-        /* TODO rather then assigning split of a tree, assign orgin tree with a cut branch */
         this.decisionTree = parent2.decisionTree;
         TreeNode temp = this.decisionTree;
         Random rnd = new Random();
-        for (int i = 0; i < 3; i++) {
+        int penetK = rnd.nextInt(5);
+        for (int i = 0; i < penetK - 1; i++) {
             if (!temp.getChildren().isEmpty()) {
                 int chooseChild = rnd.nextInt(temp.getNumberOfChildren() - 1);
                 if (chooseChild < 0) {
@@ -325,8 +335,15 @@ public class Player extends Sprite implements Commons {
                 temp = temp.getChild(chooseChild);
             }
         }
-        temp = parent1.decisionTree;
+        for (int i = 0; i < penetK; i++) {
+            if (parent1.decisionTree.getChildren().isEmpty()) {
+                temp = parent1.decisionTree;
+            } else {
+                temp = parent1.decisionTree.getChild(parent1.decisionTree.getNumberOfChildren() - 1);
+            }
+        }
         this.decisionTree = temp;
+        //System.out.println("done");
         // decisionTree.geneticX(decisionTree, parent1.decisionTree.geneticY(parent1.decisionTree));
     }
 
@@ -342,5 +359,13 @@ public class Player extends Sprite implements Commons {
 
     public void setAlive() {
         this.alive = true;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

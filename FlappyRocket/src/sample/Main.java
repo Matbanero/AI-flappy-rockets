@@ -13,6 +13,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 
+    /*
+    *  TODO: Reduce sizes of the trees - add constraint
+    *  TODO: Improve mixing of a population
+    *  TODO: Add highest score
+    *  */
+
+
 public class Main extends Application implements Commons {
 
 
@@ -30,27 +37,6 @@ public class Main extends Application implements Commons {
         root.getChildren().addAll(canvas, world[0].getText());
 
 
-        /* Handling user input */
-        scene.setOnKeyPressed(
-                new EventHandler<KeyEvent>() {
-                    @Override
-                    public void handle(KeyEvent event) {
-
-                        /* If player presses space - player jumps. */
-                       /* if (event.getCode() == KeyCode.SPACE) {
-                            world[0].getPlayer().jump();
-                        }*/
-
-                        /* If player is dead and presses R - restart game. */
-                        if (world[0].allDead() && event.getCode() == KeyCode.R && World.getGeneration() < MAX_GENERATION) {
-                            root.getChildren().remove(world[0].getText());
-                            world[0] = new World(Commons.GAME_WIDTH, Commons.GAME_HEIGHT);
-                            root.getChildren().add(world[0].getText());
-                        }
-                    }
-                }
-        );
-
         /* Create grafic context for canvas */
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
@@ -64,6 +50,10 @@ public class Main extends Application implements Commons {
                 if (!world[0].allDead()) {
                     world[0].update();
                     world[0].drawWorld(gc);
+                } else if (world[0].allDead() && World.getGeneration() < MAX_GENERATION) {
+                    root.getChildren().remove(world[0].getText());
+                    world[0] = new World(Commons.GAME_WIDTH, Commons.GAME_HEIGHT);
+                    root.getChildren().add(world[0].getText());
                 }
 
             }

@@ -51,7 +51,7 @@ public class TreeNode {
 
 
     public TreeNode getChild(int index) throws ArrayIndexOutOfBoundsException {
-        if (index > 3) {
+        if (index < 0) {
             throw new ArrayIndexOutOfBoundsException();
         } else {
             return this.children.get(index);
@@ -136,11 +136,11 @@ public class TreeNode {
             node = new TreeNode(0);
         } else if (decisionPicker >= 0.2 && decisionPicker < 0.6) {
             node = new TreeNode(1);
-        } else if (decisionPicker >= 0.6 && decisionPicker < 0.7) {
+        } else if (decisionPicker >= 0.6 && decisionPicker < 0.72) {
             node = new TreeNode(2);
-        } else if (decisionPicker >= 0.7 && decisionPicker < 0.8) {
+        } else if (decisionPicker >= 0.72 && decisionPicker < 0.81) {
             node = new TreeNode(3);
-        } else if (decisionPicker >= 0.8 && decisionPicker < 0.9) {
+        } else if (decisionPicker >= 0.81 && decisionPicker < 0.9) {
             node = new TreeNode(4);
         } else if (decisionPicker >= 0.9 && decisionPicker < 0.95) {
             node = new TreeNode(5);
@@ -148,6 +148,20 @@ public class TreeNode {
             node = new TreeNode(6);
         }
         return node;
+    }
+
+    public int getTreeHeight(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else {
+            int heighestSubTree = 0;
+            for (TreeNode child : root.children) {
+                if (getTreeHeight(child) > heighestSubTree) {
+                    heighestSubTree = getTreeHeight(child);
+                }
+            }
+            return 1 + heighestSubTree;
+        }
     }
 
 }
